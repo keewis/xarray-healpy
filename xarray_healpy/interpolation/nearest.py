@@ -48,7 +48,7 @@ def nearest_neighbor_interpolation_weights(
 
     # use a tree index to find the n closest neighbors
     tree = BallTree(source_coords, metric=metric)
-    _, neighbor_indices = tree.query(target_coords, k=1)
+    _, neighbor_indices = tree.query(target_coords, k=1, dualtree=True)
 
     raw_weights = np.ones_like(neighbor_indices, dtype=float)
 
