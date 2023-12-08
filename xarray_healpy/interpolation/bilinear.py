@@ -1,5 +1,3 @@
-import itertools
-
 import numba
 import numpy as np
 import sparse
@@ -9,6 +7,7 @@ import xarray as xr
 from sklearn.neighbors import BallTree
 
 from xarray_healpy.interpolation.mask import mask_weights
+from xarray_healpy.interpolation.utils import determine_stack_dims, prepare_coords
 
 
 @numba.njit
@@ -126,18 +125,6 @@ def _compute_bilinear_interpolation_weights(
         cell_indices[index, :] = current_indices[cell_vertex_indices]
 
     return weights, cell_indices
-
-
-def determine_stack_dims(grid, variables):
-    all_dims = (tuple(grid[var].dims) for var in variables)
-
-    return tuple(dict.fromkeys(itertools.chain.from_iterable(all_dims)))
-
-
-def prepare_coords(grid, coords, stacked_dim, stacked_dims):
-    stacked = grid[coords].stack({stacked_dim: stacked_dims})
-
-    return np.stack([stacked[coord].data for coord in coords], axis=-1)
 
 
 def bilinear_interpolation_weights(
